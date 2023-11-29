@@ -92,8 +92,8 @@ export default function Profile() {
                 {data_p[0].user_data.user_name}
               </h1>
 
-              <ul className=" text-gray-600 hover:text-gray-700  py-2  mt-3 divide-y rounded ">
-                <li className="flex items-center bg-gray-100 py-1 rounded-sm px-1">
+              <ul className="  py-2  mt-3  ">
+                <li className="flex items-center bg-gray-100 py-2 rounded-sm px-1 text-gray-600 hover:text-gray-700 hover:bg-slate-200 ">
                   <span>Membership</span>
                   <span className="ml-auto">
                     <p className="bg-red-400 py-1  lg:px-2 px-1 rounded text-white text-sm">
@@ -114,9 +114,9 @@ export default function Profile() {
                     className="w-max"
                     to={`/edit/user/${data_p[0].user_data.id}/${data_p[0].user_data.uid}`}
                   >
-                    <li className="bg-gray-100 py-2  lg:px-2 px-1  mt-3 rounded text-black text-sm hover:bg-slate-200">
+                    <p className="bg-gray-100 py-2  lg:px-2 px-1  mt-3 rounded-sm text-gray-600 text-lg hover:bg-slate-200">
                       Update Profile
-                    </li>
+                    </p>
                   </NavLink>{" "}
                 </li>
               </ul>
@@ -152,8 +152,8 @@ export default function Profile() {
                     }`}
                   >
                     <div className="px-1 py-2 font-semibold">Gender</div>
-                    <div className="px-1 py-2 bg-gray-100 rounded-md w-1/4 text-center">
-                      Male{" "}
+                    <div className="px-1 py-2 bg-gray-100 rounded-md lg:w-1/4 text-center">
+                      {data_p[0].user_data.gender}{" "}
                     </div>
                   </div>
                   <div
@@ -161,8 +161,8 @@ export default function Profile() {
                       data_p[0].user_data.age === 0 ? "hidden" : "grid"
                     }`}
                   >
-                    <div className="px-1 py-2 font-semibold">Age</div>
-                    <div className="px-1 py-2 bg-gray-100 rounded-md w-1/4 text-center">
+                    <div className="px-1 py-2 font-semiboldx">Age</div>
+                    <div className="px-1 py-2 bg-gray-100 rounded-md lg:w-1/4 text-center">
                       {data_p[0].user_data.age}{" "}
                     </div>
                   </div>

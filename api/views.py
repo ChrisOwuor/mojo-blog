@@ -1,6 +1,9 @@
+import openai
+from rest_framework.decorators import api_view
+from django.db.models import Q
+from django.views.decorators.http import require_GET
 from rest_framework.decorators import api_view, permission_classes
-from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions
+from django.shortcuts import get_object_or_404, render
 from api.models import Blog, BlogCategory, Like, BlogComment, Subscription
 from api.serializers import BlogSerializer, BlogCategorySerializer, CommentSerializer, LikeSerializer, SubscriptionSerializer
 from user.models import NewUser
@@ -11,28 +14,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.db.models import Count
-
-
-# # get all blogs and to post a blog
-# @api_view(['GET'])
-# @parser_classes([MultiPartParser, FormParser])
-# def Blogs(request):
-#     if request.method == 'GET':
-#         blogs = Blog.objects.all()
-#         # Create a list to store serialized data with user names
-#         serialized_data = []
-
-#         for blog in blogs:
-#             data = BlogSerializer(blog).data
-#             # Replace 'user_name' with the actual field name for the user's name
-#             data['creator'] = blog.creator.user_name
-#             data['category'] = blog.category.category_name
-#             data['category_id'] = blog.category.id
-#             data['image']= blog.creator.image
-
-#             serialized_data.append(data)
-
-#         return Response(serialized_data, status.HTTP_200_OK)
+from django.http import StreamingHttpResponse
+import os
 
 
 # view to get all blogs
@@ -124,6 +107,37 @@ def add_blog(request):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# add blog
+
+
+@api_view(['PUT'])
+@parser_classes([MultiPartParser, FormParser])
+@permission_classes([IsAuthenticated])
+def edit_blog(request, uid):
+    if request.method == "PUT":
+        try:
+            blog = Blog.objects.get(uid=uid)
+        except Blog.DoesNotExist:
+            return Response({"detail": "Blog not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        mutable_data = request.data.copy()
+
+        # Assuming category is a string in the request data
+        category_name = mutable_data.get('category', '')
+        # Get or create the category
+        category, created = BlogCategory.objects.get_or_create(
+            category_name=category_name)
+        mutable_data['category'] = category.id
+
+        # Update the serializer with the request data and instance
+        serializer = BlogSerializer(blog, data=mutable_data, partial=True)
+        if serializer.is_valid():
+
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # views to serve hero section
 
@@ -193,7 +207,7 @@ def get_single_blog(request, uid):
     serialised_comments = CommentSerializer(comments, many=True).data
     likes = Like.objects.filter(blog=single_blog)
     like = LikeSerializer(likes, many=True).data
-  
+
     data["category"] = category["category_name"]
     data["creator"] = creator["user_name"]
 
@@ -308,6 +322,8 @@ def buy_premium(request, id):
     serializer = CustomUserSerializer(user).data
     subscription, created = Subscription.objects.get_or_create(
         premium_user=user)
+    
+    
 
     payment = "success"
 
@@ -329,3 +345,65 @@ def buy_premium(request, id):
         serialized_data["amount"] = amount
 
         return Response(serialized_data, status=status.HTTP_400_BAD_REQUEST)
+
+# view for search fields
+@api_view(['GET'])
+@require_GET
+def blog_search(request):
+    try:
+        search_query = request.GET.get('q', '')
+
+        if not search_query:
+            return Response([])
+
+        results = Blog.objects.filter(
+            Q(title__icontains=search_query) | Q(content__icontains=search_query))
+
+        data = [{'id': blog.id, 'title': blog.title, 'content': blog.content, "uid": blog.uid}
+                for blog in results]
+
+        return Response(data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
+def stream_video(request):
+    video_file_path = video_path = os.path.join('static', "ali.mp4")
+# Replace with the actual path to your video file
+
+    def generate_video_chunks(video_path):
+        with open(video_path, 'rb') as video_file:
+            while True:
+                # Read 1MB chunks of the video file
+                chunk = video_file.read(1024 * 1024)
+                if not chunk:
+                    break
+                yield chunk
+
+    response = StreamingHttpResponse(generate_video_chunks(
+        video_file_path), content_type='video/mp4')
+    return response
+
+
+# views.py
+
+# view to generate response
+@api_view(['POST'])
+def generate_response(request):
+    if request.method == 'POST':
+        client = openai.OpenAI(
+            api_key="")
+        prompt = request.data.get('prompt', '')
+        command = "below is a prompt make sure it reads make a blog about or anything close to that like i would like to create a blog about then only create a 3 titles and a 3 paragraphs at most dont exceed not a very long one just 200 words maximum for  every title enclose it in asterix and for every paragraph enclose it in double quotes dont write a the initial prompt just start from the first title assume the prompt is like write a blog about benefits of school just write a title and body *title here* " "  inside the asterix include the title and in the quotes include the body  again go to second *title here* "   " in the asterix include title  and write the body inside the quotes enclose the  in asterix and body in quotes follow this order precisely DO NOT  write anything else like disclaimer or a note just the three titles and the body thats all"
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+
+                {"role": "user", "content": command+prompt}
+            ]
+        )
+        response_message = response.choices[0].message.content
+
+        return Response({"mes": response_message}, status=status.HTTP_200_OK)
+
+    return Response({'error': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)

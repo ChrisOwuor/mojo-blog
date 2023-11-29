@@ -8,9 +8,7 @@ import {
   TEModalBody,
 } from "tw-elements-react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { NavLink } from "react-router-dom";
-import Result from "./Result";
-import Payment from "../pages/Payment";
+
 import AuthContext from "../contexts/AuthContext";
 import mpesa from "../assets/mpesa.png";
 export default function PayModal({ id, no }) {
@@ -18,6 +16,7 @@ export default function PayModal({ id, no }) {
   let { AuthTokens } = useContext(AuthContext);
   const [amount, setAmount] = useState(619);
   const [message, setMessage] = useState("");
+  const [paid, setPaid] = useState(false);
 
   const pay = async (event, id) => {
     event.preventDefault();
@@ -40,12 +39,11 @@ export default function PayModal({ id, no }) {
     // Check if the response is okay
     if (response.status === 202) {
       const result = await response.json();
-        setMessage(result);
-        console.log(message);
-      // Check if the status is 202
-      // This setTimeout will set loading to false after 5 seconds
+      setMessage(result);
+
       setTimeout(() => {
         setLoading(false);
+        setPaid(true);
       }, 5000);
     } else {
       // Handle HTTP errors
@@ -87,8 +85,8 @@ export default function PayModal({ id, no }) {
             {/* <!--Modal body--> */}
             <TEModalBody>
               <div class="relative p-4  ">
-                              <div class=" flex space-x-3 lg:mt-0">y
-                                  <p>{message.message}</p>
+                <div class=" flex space-x-3 lg:mt-0">
+                  y<p>{message.message}</p>
                   <h1 class="text-base font-semibold leading-6 text-red-400">
                     All-access
                   </h1>
@@ -140,7 +138,11 @@ export default function PayModal({ id, no }) {
                 type="button"
                 class="text-white bg-red-400     font-medium rounded-lg text-sm px-5 py-2.5 text-center "
               >
-                {loading ? "processing" : "Proceed to pay "}
+                {loading
+                  ? "Processing"
+                  : paid
+                  ? "Payment successful"
+                  : "Proceed to pay"}
               </button>
               <button
                 onClick={() => setShowModal(false)}
@@ -148,7 +150,7 @@ export default function PayModal({ id, no }) {
                 type="button"
                 class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
               >
-                Decline
+                close
               </button>
             </div>
           </TEModalContent>

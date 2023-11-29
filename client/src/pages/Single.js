@@ -10,7 +10,7 @@ const moment = require("moment");
 export default function Single() {
   const { id } = useParams();
 
-  let {  user, logoutUser, data } = useContext(AuthContext);
+  let { user, logoutUser, data } = useContext(AuthContext);
   const [datasingle, setdatasingle] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,11 +41,36 @@ export default function Single() {
     }, 2000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const isSmallScreen = window.innerWidth < 600;
   console.log(loading);
   const dateFormat = isSmallScreen
     ? "DD/MM/YYYY"
     : "MMMM DD, YYYY [at] HH:mm:ss";
+
+  // Function to format content with headings and sections
+const formatContent = (content) => {
+  const sections = content.split(/\r\n/);
+
+  return sections
+    .map((section, index) => {
+      if (section.startsWith("*")) {
+        // If the section starts with an asterisk, treat it as a heading
+        return (
+          <h1 className="text-xl font-bold mt-8" key={index}>
+            {section.slice(1, -1)}
+          </h1>
+        );
+      } else if (section.startsWith('"')) {
+        // If the section starts with a quote, treat it as a paragraph
+        return <p key={index}>{section.slice(1, -1)}</p>;
+      }
+      return null;
+    })
+    .filter(Boolean);
+};
+
+
 
   return (
     <div className="pageelem w-full flex justify-center">
@@ -68,28 +93,30 @@ export default function Single() {
                 fill="currentFill"
               />
             </svg>
-            <span class="sr-only">Loading...</span>
+            <span class="sr-only">Loading...</span>{" "}
           </div>
         </div>
       ) : (
         <div className="w-5/6 mx-auto px-4 sm:px-8 xl:px-0  pb-8">
           <div className="w-full  mx-auto text-center ">
             <div className="flex justify-center gap-4">
-              {" "}
-              <Link
-                className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2"
-                to={`/blogs/${datasingle.category}`}
-              >
-                # {datasingle.category}
-              </Link>
-              <p
-                className={`${
-                  !datasingle.is_premium && "hidden"
-                }  bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2`}
-              >
+              <div className="flex justify-center gap-4">
                 {" "}
-                {datasingle.is_premium && "Premium"}
-              </p>
+                <Link
+                  className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2"
+                  to={`/blogs/${datasingle.category}`}
+                >
+                  # {datasingle.category}
+                </Link>
+                <p
+                  className={`${
+                    !datasingle.is_premium && "hidden"
+                  }  bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 hover:bg-blue-200 dark:hover:bg-blue-300 dark:text-blue-800 mb-2`}
+                >
+                  {" "}
+                  {datasingle.is_premium && "Premium"}
+                </p>
+              </div>{" "}
             </div>
             <h1 className="font-bold text-xl mx-auto lg:w-5/6 sm:text-4xl lg:text-custom-2 text-dark mb-5">
               {datasingle.title}{" "}
@@ -146,7 +173,9 @@ export default function Single() {
                 <>
                   {datasingle.is_premium && data.premium && (
                     <div>
-                      <p className="mb-5 text-body">{datasingle.content}</p>
+                        {" "}
+                        {formatContent(datasingle.content)}
+                      
                       <p>{"premium content for premium user"}</p>
                       <div></div>
                     </div>
@@ -156,7 +185,7 @@ export default function Single() {
                   {datasingle.is_premium && !data.premium && (
                     <div>
                       <p className="mb-5 text-body">
-                        {datasingle.content.slice(0, 100)}
+                        {formatContent(datasingle.content).slice(0, 100)}
                       </p>
                       <p>premium content only for premium user</p>
                       <div></div>
@@ -166,7 +195,9 @@ export default function Single() {
                 <>
                   {!datasingle.is_premium && !data.premium && (
                     <div>
-                      <p className="mb-5 text-body">{datasingle.content}</p>
+                        {" "}
+                        {formatContent(datasingle.content)}
+                     
                       <p>free content for non premium user</p>
                       <div></div>
                     </div>
@@ -175,7 +206,10 @@ export default function Single() {
                 <>
                   {!datasingle.is_premium && data.premium && (
                     <div>
-                      <p className="mb-5 text-body">{datasingle.content}</p>
+                      <p className="mb-5 text-body">
+                        {" "}
+                        {formatContent(datasingle.content)}
+                      </p>
                       <p>free content for a premium user</p>
                       <div></div>
                     </div>
@@ -184,11 +218,11 @@ export default function Single() {
               </>
             ) : (
               <div>
-                <p className="mb-5 text-body">
-                  {datasingle.is_premium
+                {formatContent(
+                  datasingle.is_premium
                     ? datasingle.content.slice(0, 150)
-                    : datasingle.content.slice(0)}
-                </p>
+                    : datasingle.content.slice(0)
+                )}
                 <p className="mt0-12">
                   {datasingle.is_premium
                     ? " create account and Upgrade to premium to view premium content"
@@ -202,8 +236,8 @@ export default function Single() {
             comment={datasingle.comments}
             no={datasingle.comments_no}
             blog_uuid={datasingle.uid}
-              getBlogs={getBlogs}
-              data ={datasingle}
+            getBlogs={getBlogs}
+            data={datasingle}
           />
         </div>
       )}

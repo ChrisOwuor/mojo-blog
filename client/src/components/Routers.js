@@ -18,6 +18,8 @@ import { AuthProvider } from "../contexts/AuthContext";
 import Edit from "../pages/Edit";
 import Temp from "../pages/Temp";
 import EditProfile from "../pages/EditProfile";
+import CreateBlogPage from "./sections";
+import PrivateRoutes from "../utils/PrivateRoute";
 
 const RouterComponent = () => {
   return (
@@ -26,7 +28,6 @@ const RouterComponent = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/create" element={<Create />} />
           <Route path="/single/:id" element={<Single />} />
           <Route path="/profile/:id/:name" element={<Profile />} />
           <Route path="/login" element={<Login />} />
@@ -39,9 +40,16 @@ const RouterComponent = () => {
             <Route path="/blogs/:name/:id/:uid" element={<Temp />} />
           </Route>
           <Route path="/about" element={<About />} />
+          <Route path="/section" element={<CreateBlogPage />} />
+            <Route element={<PrivateRoutes />}>
+            <Route path="/create" element={<Create />} />
+           </Route>
           <Route path="/bio/:id" element={<Bio />} />
           <Route path="/edit/blog/:blog_uid" element={<Edit />} />
-          <Route path="/edit/user/:user_id/:user_uid" element={<EditProfile/>} />
+          <Route
+            path="/edit/user/:user_id/:user_uid"
+            element={<EditProfile />}
+          />
 
           <Route path="/*" element={<Error />} />
         </Routes>

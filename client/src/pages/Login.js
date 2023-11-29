@@ -6,7 +6,7 @@ import AuthContext from "../contexts/AuthContext";
 
 export default function Login () {
   
-    const { loginUser, setEmail, setPass } = useContext(AuthContext);
+    const { loginUser, setEmail, setPass ,load ,loginerror } = useContext(AuthContext);
 
   return (
     <div className="my-8">
@@ -75,7 +75,8 @@ export default function Login () {
             Or sign in with email
           </span>
           <div className="mt-6">
-            <form>
+            <p className="font-semibold text-lg text-danger text-center">{ loginerror && loginerror}</p>
+            <form onSubmit={loginUser}>
               <div className="mb-4">
                 <label
                   for="email"
@@ -86,9 +87,11 @@ export default function Login () {
                 <input
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
+                  required
                   placeholder="Enter your email"
                   className="rounded-md border border-gray-4 bg-white focus:border-gray-7 placeholder:text-dark-2 w-full py-3.5 px-6 outline-none duration-200 focus:shadow-input focus:ring-2 focus:ring-dark-4/20 focus:border-transparent"
                 />
+                
               </div>
               <div className="mb-5">
                 <label
@@ -98,11 +101,13 @@ export default function Login () {
                   Password
                 </label>
                 <input
+                  required
                   onChange={(e) => setPass(e.target.value)}
                   type="password"
                   placeholder="Confirm password"
                   className="rounded-md border border-gray-4 bg-white focus:border-gray-7 placeholder:text-dark-2 w-full py-3.5 px-6 outline-none duration-200 focus:shadow-input focus:ring-2 focus:ring-dark-4/20 focus:border-transparent"
                 />
+                
               </div>
               <div className="flex items-center justify-between mb-7">
                 <a href="/#" className="text-dark">
@@ -110,11 +115,10 @@ export default function Login () {
                 </a>
               </div>
               <button
-                onClick={loginUser}
                 type="submit"
                 className="w-full rounded-md text-white font-medium flex justify-center py-3.5 px-5 bg-blue-400 hover:opacity-90 transition-all duration-200"
               >
-                Login
+                {load ? " loading" : "login"}
               </button>
               <p className="text-center mt-5">
                 Don't have an account?

@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function Blog2 ({blog }) {
+export default function Blog2 ({ blog }) {
+ const formattedContent1 = blog && blog.content.replace(/[*"]/g, "").trim();
+
   return (
     <article class="py-6 w-full rounded-lg bg-slate-100 p-4 h-max ">
       <div class="flex items-center justify-between mb-3 text-gray-500">
@@ -18,7 +20,7 @@ export default function Blog2 ({blog }) {
         {blog.title.slice(0, 90)}
       </h2>
       <p class="mb-5 text-gray-500 dark:text-gray-400">
-        {blog.content.slice(0, 200)}....
+        {formattedContent1.slice(0, 200)}....
       </p>
       <div class="flex items-center justify-between mb-1">
         <p class="flex items-center space-x-2">

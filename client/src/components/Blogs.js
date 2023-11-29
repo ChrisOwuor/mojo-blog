@@ -70,7 +70,7 @@ export default function Blogs() {
           </div>
           <div className="flex flex-wrap justify-center gap-4 items-center mb-8">
             {category &&
-              category.map((cat) => (
+              category.slice(0,5).map((cat) => (
                 <NavLink
                   key={cat.id}
                   to={`/blogs/${cat.category_name}/${cat.id}/${cat.uid}`}

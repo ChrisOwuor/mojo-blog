@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [email, setEmail] = useState(null);
   const [password, setPass] = useState(null);
   const [load, setload] = useState(false);
+  const [loginerror,setloginError] = useState(null)
   const body = {
     email: email,
     password: password,
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }) => {
 
   let loginUser = async (e) => {
     e.preventDefault();
+    setload(true)
     let response = await fetch("http://127.0.0.1:8000/auth/token/", {
       method: "POST",
       headers: {
@@ -45,12 +47,21 @@ export const AuthProvider = ({ children }) => {
     let data = await response.json();
     if (response.status === 200) {
       setAuthTokens(data);
-      setload(true);
+      setTimeout(() => {
+        setload(false);
+
+      },2000);
       setUser(jwtDecode(data.access));
       localStorage.setItem("Authtokens", JSON.stringify(data));
       navigate("/");
-    } else {
-      alert("something went wrong");
+    } else if (response.status === 401) {
+      setTimeout(() => {
+        setloginError("No active account found with the given credentials");
+
+      },2000);
+      setTimeout(() => {
+         setload(false);
+       }, 2000);
     }
   };
 
@@ -116,6 +127,7 @@ export const AuthProvider = ({ children }) => {
     load: load,
     data: data,
     loadingPage: loadingPage,
+    loginerror:loginerror
   };
 
   useEffect(() => {

@@ -27,10 +27,12 @@ SECRET_KEY = 'django-insecure-u89$xhrf&fw-ztk!yr^sh#d(m04nzh2e3cz2o@sh0i0(vmbw=+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "*"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
+
+OPEN_AI_KEY = "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"
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -44,17 +46,17 @@ INSTALLED_APPS = [
     "user",
     'corsheaders',
     "api",
+    "profiles"
+    
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -67,8 +69,9 @@ ROOT_URLCONF = 'blog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [
+            os.path.join(BASE_DIR, 'client/build'),
+        ],        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',

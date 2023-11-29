@@ -5,10 +5,14 @@ import HeroSkeleton from "./HeroSkeleton";
 const moment = require("moment");
 
 export default function Hero() {
-  let {  logoutUser } = useContext(AuthContext);
+  let { logoutUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const formattedContent1 = data && data[0].content.replace(/[*"]/g, "").trim();
+   const formattedContent2 = data && data[1].content.replace(/[*"]/g, "").trim();
+ const formattedContent3 = data && data[2].content.replace(/[*"]/g, "").trim();
+
 
   useEffect(() => {
     let getBlogs = async () => {
@@ -73,21 +77,20 @@ export default function Hero() {
                   <Link to={`/single/${data[0].uid}`}>{data[0].title}</Link>
                 </h1>
                 <p className="max-w-[524px">
-                  {data[0].content.slice(0, 100)}...
+                  {formattedContent1.slice(0, 100)}...
                 </p>
                 <div className="flex items-center gap-2.5 mt-5">
-                 
-                    <div className="flex w-6 h-6 rounded-full overflow-hidden" />
-                    <img
-                      src={`http://127.0.0.1:8000/${data[0].profile}`}
-                      alt="user"
-                      className=" w-12 h-12 rounded-full"
-                    />
-                    <p className="text-sm">
-                      {" "}
-                      <span className="mr-2">By</span>
-                      {data[0].creator}
-                    </p>
+                  <div className="flex w-6 h-6 rounded-full overflow-hidden" />
+                  <img
+                    src={`http://127.0.0.1:8000/${data[0].profile}`}
+                    alt="user"
+                    className=" w-12 h-12 rounded-full"
+                  />
+                  <p className="text-sm">
+                    {" "}
+                    <span className="mr-2">By</span>
+                    {data[0].creator}
+                  </p>
                   <span className="flex w-[3px] h-[3px] rounded-full bg-dark-2"></span>
                   <p className="text-sm">
                     {moment(data[0].created_at).fromNow()}
@@ -117,9 +120,7 @@ export default function Hero() {
                   <Link to={`/single/${data[1].uid}`}>{data[1].title}</Link>
                 </h2>
                 <div className="flex items-center gap-2.5">
-                  <p className="text-sm">
-                    By {data[1].creator}
-                  </p>
+                  <p className="text-sm">By {data[1].creator}</p>
                   <span className="flex w-[3px] h-[3px] rounded-full bg-dark-2"></span>
                   <p className="text-sm">
                     {" "}
@@ -140,18 +141,14 @@ export default function Hero() {
                 </Link>
               </div>
               <div className="lg:max-w-[272px] w-full">
-                <p
-                  className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
-                >
+                <p className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                   {data[2].category}{" "}
                 </p>
                 <h2 className="font-semibold text-custom-lg text-dark mb-3">
                   <Link to={`/single/${data[2].uid}`}>{data[2].title}</Link>
                 </h2>
                 <div className="flex items-center gap-2.5">
-                  <p className="text-sm">
-                    By {data[2].creator}
-                  </p>
+                  <p className="text-sm">By {data[2].creator}</p>
                   <span className="flex w-[3px] h-[3px] rounded-full bg-dark-2"></span>
                   <p className="text-sm">
                     {" "}

@@ -2,7 +2,10 @@ import React from "react";
 import { Link} from "react-router-dom";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-export default function Blog4 ({ blog,  Delete }) {
+export default function Blog4 ({ blog, Delete }) {
+      const formattedContent1 =
+        blog && blog.content.replace(/[*"]/g, "").trim();
+
   return (
     <article class="py-6 w-full rounded-lg bg-slate-100 lg:p-4 p-6 h-max">
       <div class="flex items-center justify-between mb-3 text-gray-500"></div>
@@ -10,7 +13,7 @@ export default function Blog4 ({ blog,  Delete }) {
         {blog.title}
       </h2>
       <p class="mb-5 text-gray-500 dark:text-gray-400">
-        {blog.content.slice(0, 200)}.
+        {formattedContent1.slice(0, 200)}.
       </p>
       <div class="flex items-center justify-between mb-1">
         <div className="flex gap-4 px-2">

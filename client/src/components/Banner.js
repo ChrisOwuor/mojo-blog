@@ -6,7 +6,7 @@ import { XMarkIcon } from '@heroicons/react/20/solid'
 
 export default function Example() {
   return (
-    <div className="relative isolate flex items-center gap-x-6 overflow-hidden  px-6 py-1 sm:px-3.5 sm:before:flex-1 rounded-md">
+    <div className="relative isolate flex items-center gap-x-6 overflow-hidden  lg:px-6 py-1 sm:px-3.5 sm:before:flex-1 rounded-md">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <p className="text-sm leading-6 text-gray-900">
           <strong className="font-semibold">Intoducing Ai Creator </strong>
