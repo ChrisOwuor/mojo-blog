@@ -392,7 +392,7 @@ def stream_video(request):
 def generate_response(request):
     if request.method == 'POST':
         client = openai.OpenAI(
-            api_key="")
+            api_key="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")
         prompt = request.data.get('prompt', '')
         command = "below is a prompt make sure it reads make a blog about or anything close to that like i would like to create a blog about then only create a 3 titles and a 3 paragraphs at most dont exceed not a very long one just 200 words maximum for  every title enclose it in asterix and for every paragraph enclose it in double quotes dont write a the initial prompt just start from the first title assume the prompt is like write a blog about benefits of school just write a title and body *title here* " "  inside the asterix include the title and in the quotes include the body  again go to second *title here* "   " in the asterix include title  and write the body inside the quotes enclose the  in asterix and body in quotes follow this order precisely DO NOT  write anything else like disclaimer or a note just the three titles and the body thats all"
         response = client.chat.completions.create(

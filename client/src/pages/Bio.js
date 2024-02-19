@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import BlogBio from "../components/BlogBio";
 
 export default function Profile() {
-  let { AuthTokens, logoutUser } = useContext(AuthContext);
+  let { logoutUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,13 +12,16 @@ export default function Profile() {
 
   useEffect(() => {
     let getBlogs = async () => {
-      let response = await fetch(`http://localhost:8000/auth/bio/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: "Bearer " + String(AuthTokens.access),
-        },
-      });
+      let response = await fetch(
+        `${process.env.REACT_APP_API_BACKEND_URL  + "/auth/bio/"+ id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: "Bearer " + String(AuthTokens.access),
+          },
+        }
+      );
       let data = await response.json();
 
       if (response.status === 200) {
@@ -35,12 +38,8 @@ export default function Profile() {
     };
 
     getBlogs();
-  }, []);
-  const isSmallScreen = window.innerWidth < 600;
-
-  const dateFormat = isSmallScreen
-    ? "DD/MM/YYYY"
-    : "MMMM DD, YYYY [at] HH:mm:ss";
+  }, [error, id, logoutUser]);
+ 
   return (
     <div className="lg:container mx-auto my-5  w-full p-5">
       {loading ? (
@@ -74,7 +73,10 @@ export default function Profile() {
                   <div className="image overflow-hidden rounded-md">
                     <img
                       className="h-auto w-full mx-auto"
-                      src={`http://127.0.0.1:8000/${data.user_info.image}`}
+                      src={`${
+                        process.env.REACT_APP_API_BACKEND_URL +
+                        data.user_info.image
+                      }`}
                       alt=""
                     />
                   </div>

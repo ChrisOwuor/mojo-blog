@@ -15,7 +15,7 @@ export default function Blog3 ({ blog }) {
         </div>
       </div>
       <h2 class="mb-2 text-2xl font-semibold tracking-tight h-16 text-gray-900   dark:text-white hover:underline">
-        {blog.title.slice(0,90)}
+        {blog.title.slice(0, 90)}
       </h2>
       <p class="mb-5 text-gray-500 dark:text-gray-400">
         {formattedContent1.slice(0, 200)}....
@@ -24,7 +24,7 @@ export default function Blog3 ({ blog }) {
         <div class="flex items-center space-x-2">
           <img
             class="rounded-full w-16 h-16 object-cover"
-            src={`http://127.0.0.1:8000${blog.profile}`}
+            src={`${process.env.REACT_APP_API_BACKEND_URL + blog.profile}`}
             alt="Rich Klein profile_picture"
           />
           <span class="font-medium dark:text-white">{blog.creator}</span>

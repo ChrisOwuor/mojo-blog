@@ -4,7 +4,7 @@ const moment = require("moment");
 
 export default function Comment({ comment, no, blog_uuid, getBlogs }) {
   const { user, AuthTokens } = useContext(AuthContext);
-console.log(user);
+  console.log(user);
   const [loading, setLoading] = useState(true);
   const [blogcomment, SetBlogComment] = useState(null);
   const [blog_content, setBlog_Content] = useState("");
@@ -25,7 +25,9 @@ console.log(user);
 
     try {
       let response = await fetch(
-        `http://localhost:8000/api/comment/${comment_to_edit.id}/`,
+        `${
+          process.env.REACT_APP_API_BASE_URL + "/comment/ " + comment_to_edit.id
+        }/`,
         {
           method: "PUT",
           headers: {
@@ -56,7 +58,11 @@ console.log(user);
 
     try {
       let response = await fetch(
-        `http://localhost:8000/api/comment/${comment_to_delete.id}/`,
+        `${
+          process.env.REACT_APP_API_BASE_URL +
+          +"/comment/" +
+          comment_to_delete.id
+        }/`,
         {
           method: "DELETE",
           headers: {
@@ -86,14 +92,17 @@ console.log(user);
     };
 
     try {
-      let response = await fetch(`http://localhost:8000/api/comment/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + String(AuthTokens.access),
-        },
-        body: JSON.stringify(body),
-      });
+      let response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL + "/comment/"}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + String(AuthTokens.access),
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       let data = await response.json();
 
@@ -176,7 +185,10 @@ console.log(user);
                 <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
                   <img
                     className="mr-2 w-6 h-6 rounded-full"
-                    src={`http://127.0.0.1:8000/${comment.comment_by_profile}`}
+                    src={`${
+                      process.env.REACT_APP_API_BACKEND_URL +
+                      comment.comment_by_profile
+                    }`}
                     alt="Bonnie Green"
                   />
                   {comment.comment_by}

@@ -6,7 +6,7 @@ import AuthContext from "../contexts/AuthContext";
 import BlogsSleleton from "./BlogsSleleton";
 
 export default function Blogs() {
-  let {  logoutUser } = useContext(AuthContext);
+  let { logoutUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [category, setCategory] = useState(null);
@@ -14,12 +14,15 @@ export default function Blogs() {
 
   let getBlogs = async () => {
     setLoading(true);
-    let response = await fetch("http://localhost:8000/api/trending-blogs/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL + "/trending-blogs"}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     let data = await response.json();
 
     if (response.status === 200) {
@@ -32,13 +35,16 @@ export default function Blogs() {
     }
   };
   let getCategory = async () => {
-    let response = await fetch("http://localhost:8000/api/all/category", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: "Bearer " + String(AuthTokens.access),
-      },
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL + "/all/category"}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: "Bearer " + String(AuthTokens.access),
+        },
+      }
+    );
     let categories = await response.json();
 
     if (response.status === 200) {
@@ -70,7 +76,7 @@ export default function Blogs() {
           </div>
           <div className="flex flex-wrap justify-center gap-4 items-center mb-8">
             {category &&
-              category.slice(0,5).map((cat) => (
+              category.slice(0, 5).map((cat) => (
                 <NavLink
                   key={cat.id}
                   to={`/blogs/${cat.category_name}/${cat.id}/${cat.uid}`}

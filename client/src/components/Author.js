@@ -7,7 +7,10 @@ export default function Author({ det }) {
       <div className="border border-gray-3 rounded-[20px] bg-gray p-5 group-hover:bg-white group-hover:drop-shadow-1 group-hover:-translate-y-2 transition-all">
         <div className="flex flex-wrap items-center gap-8">
           <div className="w-24 h-24  rounded-full overflow-hidden">
-            <img src={`http://127.0.0.1:8000/${det.image} `} alt="user" />
+            <img
+              src={`${process.env.REACT_APP_API_BACKEND_URL + det.image} `}
+              alt="user"
+            />
           </div>
           <div>
             <h3 className="font-semibold text-custom-xl text-dark mb-1">

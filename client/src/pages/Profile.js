@@ -11,31 +11,52 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   let { id } = useParams();
+ let getBlogs = async () => {
+   let response = await fetch(
+     `${process.env.REACT_APP_API_BACKEND_URL + "/auth/profile/" + id}`,
+     {
+       method: "GET",
+       headers: {
+         "Content-Type": "application/json",
+         Authorization: "Bearer " + String(AuthTokens.access),
+       },
+     }
+   );
+   let data_p = await response.json();
 
-  let getBlogs = async () => {
-    let response = await fetch(`http://localhost:8000/auth/profile/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(AuthTokens.access),
-      },
-    });
-    let data_p = await response.json();
-
-    if (response.status === 200) {
-      setData(data_p);
-      setLoading(false);
-    } else if (response.statusText === "Unauthorized") {
-      setError(error);
-      setLoading(false);
-      logoutUser();
-    }
-  };
-
+   if (response.status === 200) {
+     setData(data_p);
+     setLoading(false);
+   } else if (response.statusText === "Unauthorized") {
+     setError(error);
+     setLoading(false);
+     logoutUser();
+   }
+ }; 
   useEffect(() => {
-    getBlogs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    let getBlogs = async () => {
+      let response = await fetch(
+        `${process.env.REACT_APP_API_BACKEND_URL + "/auth/profile/" + id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + String(AuthTokens.access),
+          },
+        }
+      );
+      let data_p = await response.json();
+
+      if (response.status === 200) {
+        setData(data_p);
+        setLoading(false);
+      } else if (response.statusText === "Unauthorized") {
+        setError(error);
+        setLoading(false);
+        logoutUser();
+      }
+    };    getBlogs();
+  }, [AuthTokens.access, error, id, logoutUser]);
 
   const Edit = async (e, id) => {
     e.preventDefault();
@@ -48,10 +69,11 @@ export default function Profile() {
     e.preventDefault();
 
     const blog_to_del = data_p[2].blogs.find((blog) => blog.id === id);
-    console.log(blog_to_del);
     try {
       let response = await fetch(
-        `http://localhost:8000/api/blog/action/${blog_to_del.id}/`,
+        `${
+          process.env.REACT_APP_API_BASE_URL + "/blog/action/" + blog_to_del.id
+        }/`,
         {
           method: "DELETE",
           headers: {
@@ -63,8 +85,7 @@ export default function Profile() {
 
       if (response.status === 204) {
         setLoading(false);
-        getBlogs();
-        console.log("Comment deleted successfully");
+        getBlogs()
       } else if (response.statusText === "Unauthorized") {
         setLoading(false);
       }
@@ -83,7 +104,10 @@ export default function Profile() {
             <div className="bg-white p-3 border-t-4 border-red-400">
               <div className="image overflow-hidden w-4/5 mx-auto rounded-md">
                 <img
-                  src={`http://127.0.0.1:8000/${data_p[0].user_data.image}`}
+                  src={`${
+                    process.env.REACT_APP_API_BACKEND_URL +
+                    data_p[0].user_data.image
+                  }`}
                   className="h-auto w-full mx-auto object-cover"
                   alt=""
                 />

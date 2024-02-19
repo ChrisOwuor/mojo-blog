@@ -26,7 +26,7 @@ export default function Blog2 ({ blog }) {
         <p class="flex items-center space-x-2">
           <img
             class="rounded-full w-16 h-16 object-cover"
-            src={`http://127.0.0.1:8000/${blog.profile}`}
+            src={`${process.env.REACT_APP_API_BACKEND_URL + blog.profile}`}
             alt="Rich Klein profile_picture"
           />
           <span class="font-medium dark:text-white">{blog.creator}</span>

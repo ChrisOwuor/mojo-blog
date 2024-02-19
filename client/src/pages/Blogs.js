@@ -11,13 +11,16 @@ export default function All() {
   const [category, setCategory] = useState(null);
 
   let getBlogs = async () => {
-    let response = await fetch("http://localhost:8000/api/blogs", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: "Bearer " + String(AuthTokens.access),
-      },
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL + "/blogs"}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: "Bearer " + String(AuthTokens.access),
+        },
+      }
+    );
     let data = await response.json();
 
     if (response.status === 200) {
@@ -32,13 +35,16 @@ export default function All() {
     }
   };
   let getCategory = async () => {
-    let response = await fetch("http://localhost:8000/api/all/category", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: "Bearer " + String(AuthTokens.access),
-      },
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL + "/all/category"}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: "Bearer " + String(AuthTokens.access),
+        },
+      }
+    );
     let categories = await response.json();
 
     if (response.status === 200) {

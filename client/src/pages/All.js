@@ -4,20 +4,23 @@ import Blog3 from "../components/Blog3";
 import Skeleton from "../components/skeleton";
 
 export default function All() {
-  let { AuthTokens, logoutUser } = useContext(AuthContext);
+  let { logoutUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let getBlogs = async () => {
-      let response = await fetch("http://localhost:8000/api/blogs/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: "Bearer " + String(AuthTokens.access),
-        },
-      });
+      let response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL + "/blogs"}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: "Bearer " + String(AuthTokens.access),
+          },
+        }
+      );
       let data = await response.json();
 
       if (response.status === 200) {
@@ -33,13 +36,9 @@ export default function All() {
     };
 
     getBlogs();
-  }, []);
-  const isSmallScreen = window.innerWidth < 600;
+  }, [error, logoutUser]);
 
-  const dateFormat = isSmallScreen
-    ? "DD/MM/YYYY"
-    : "MMMM DD, YYYY [at] HH:mm:ss";
-
+  
   return (
     <>
       {loading ? (

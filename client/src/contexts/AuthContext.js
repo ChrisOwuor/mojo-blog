@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [email, setEmail] = useState(null);
   const [password, setPass] = useState(null);
   const [load, setload] = useState(false);
-  const [loginerror,setloginError] = useState(null)
+  const [loginerror, setloginError] = useState(null);
   const body = {
     email: email,
     password: password,
@@ -36,43 +36,48 @@ export const AuthProvider = ({ children }) => {
 
   let loginUser = async (e) => {
     e.preventDefault();
-    setload(true)
-    let response = await fetch("http://127.0.0.1:8000/auth/token/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    setload(true);
+    let response = await fetch(
+      `${process.env.REACT_APP_API_BACKEND_URL + "/auth/token/"}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
     let data = await response.json();
     if (response.status === 200) {
       setAuthTokens(data);
       setTimeout(() => {
         setload(false);
-
-      },2000);
+      }, 2000);
       setUser(jwtDecode(data.access));
       localStorage.setItem("Authtokens", JSON.stringify(data));
       navigate("/");
     } else if (response.status === 401) {
       setTimeout(() => {
         setloginError("No active account found with the given credentials");
-
-      },2000);
+      }, 2000);
       setTimeout(() => {
-         setload(false);
-       }, 2000);
+        setload(false);
+      }, 2000);
     }
   };
 
   let updateToken = async () => {
-    let response = await fetch("http://127.0.0.1:8000/auth/token/refresh/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refresh: AuthTokens?.refresh }),
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_API_BACKEND_URL + "/auth/token/refresh/"}`,
+      // "http://192.168.43.55:8000/auth/token/refresh/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh: AuthTokens?.refresh }),
+      }
+    );
 
     let data = await response.json();
 
@@ -105,7 +110,7 @@ export const AuthProvider = ({ children }) => {
 
       return () => clearInterval(interval);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, AuthTokens, loading]);
 
   let logoutUser = useCallback(() => {
@@ -127,14 +132,18 @@ export const AuthProvider = ({ children }) => {
     load: load,
     data: data,
     loadingPage: loadingPage,
-    loginerror:loginerror
+    loginerror: loginerror,
   };
 
   useEffect(() => {
     if (user?.user_id) {
       let getProfile = async () => {
         let response = await fetch(
-          `http://localhost:8000/auth/user/${user.user_id}`,
+          `${
+            process.env.REACT_APP_API_BACKEND_URL +
+            "/auth/user/" +
+            user.user_id
+          }`,
           {
             method: "GET",
             headers: {

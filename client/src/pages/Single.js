@@ -16,13 +16,16 @@ export default function Single() {
   const [loading, setLoading] = useState(true);
 
   let getBlogs = async () => {
-    let response = await fetch(`http://localhost:8000/api/blogs/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: "Bearer " + String(AuthTokens.access),
-      },
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL + "/blogs/" + id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: "Bearer " + String(AuthTokens.access),
+        },
+      }
+    );
     let datasingle = await response.json();
 
     if (response.status === 200) {
@@ -49,28 +52,26 @@ export default function Single() {
     : "MMMM DD, YYYY [at] HH:mm:ss";
 
   // Function to format content with headings and sections
-const formatContent = (content) => {
-  const sections = content.split(/\r\n/);
+  const formatContent = (content) => {
+    const sections = content.split(/\r\n/);
 
-  return sections
-    .map((section, index) => {
-      if (section.startsWith("*")) {
-        // If the section starts with an asterisk, treat it as a heading
-        return (
-          <h1 className="text-xl font-bold mt-8" key={index}>
-            {section.slice(1, -1)}
-          </h1>
-        );
-      } else if (section.startsWith('"')) {
-        // If the section starts with a quote, treat it as a paragraph
-        return <p key={index}>{section.slice(1, -1)}</p>;
-      }
-      return null;
-    })
-    .filter(Boolean);
-};
-
-
+    return sections
+      .map((section, index) => {
+        if (section.startsWith("*")) {
+          // If the section starts with an asterisk, treat it as a heading
+          return (
+            <h1 className="text-xl font-bold mt-8" key={index}>
+              {section.slice(1, -1)}
+            </h1>
+          );
+        } else if (section.startsWith('"')) {
+          // If the section starts with a quote, treat it as a paragraph
+          return <p key={index}>{section.slice(1, -1)}</p>;
+        }
+        return null;
+      })
+      .filter(Boolean);
+  };
 
   return (
     <div className="pageelem w-full flex justify-center">
@@ -129,7 +130,9 @@ const formatContent = (content) => {
                 } w-12 h-12 rounded-full overflow-hidden`}
               >
                 <img
-                  src={`http://127.0.0.1:8000/${datasingle.profile}`}
+                  src={`${
+                    process.env.REACT_APP_API_BACKEND_URL + datasingle.profile
+                  }`}
                   alt="user"
                 />
               </div>
@@ -161,7 +164,9 @@ const formatContent = (content) => {
             }`}
           >
             <img
-              src={`http://127.0.0.1:8000/${datasingle.image}`}
+              src={`${
+                process.env.REACT_APP_API_BACKEND_URL + datasingle.image
+              }`}
               alt="blog"
               className="mt-10 mb-11"
             />
@@ -173,9 +178,8 @@ const formatContent = (content) => {
                 <>
                   {datasingle.is_premium && data.premium && (
                     <div>
-                        {" "}
-                        {formatContent(datasingle.content)}
-                      
+                      {" "}
+                      {formatContent(datasingle.content)}
                       <p>{"premium content for premium user"}</p>
                       <div></div>
                     </div>
@@ -195,9 +199,8 @@ const formatContent = (content) => {
                 <>
                   {!datasingle.is_premium && !data.premium && (
                     <div>
-                        {" "}
-                        {formatContent(datasingle.content)}
-                     
+                      {" "}
+                      {formatContent(datasingle.content)}
                       <p>free content for non premium user</p>
                       <div></div>
                     </div>

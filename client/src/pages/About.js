@@ -1,7 +1,7 @@
 import React from "react";
 
-export default function About () {
 
+export default function About() {
   return (
     <section className="overflow-hidden pt-39 pb-17.5">
       <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
@@ -9,7 +9,7 @@ export default function About () {
           <div className="lg:max-w-[570px] sm:w-3/5 w-full">
             <video controls width={"100%"} className="rounded-lg">
               <source
-                src=" http://127.0.0.1:8000/api/stream"
+                src={`${process.env.REACT_APP_API_BASE_URL}/stream `}
                 type="video/mp4"
               />
             </video>
@@ -22,14 +22,9 @@ export default function About () {
               We provide high quality Articles &amp; blogs
             </h1>
             <p>
-              Sed ullamcorper dui at risus viverra, nec cursus leo ullamcorper.
-              className aptent taciti sociosqu ad litora torquent per conubia
-              nostra, per inceptos himenaeos congue dui nec dui lobortis
-              maximus.
-            </p>
-            <p className="mt-4.5">
-              Curabitur pretium, libero vitae pharetra rhoncus, tellus urna
-              auctor orci, eu dictum diam diam nec neque. Pellentesque.
+              We cover a wide range of topics includingedication ,fitness heanth
+              and others. Whether you're interested in family or politics, we
+              strive to deliver engaging and informative content to our readers.
             </p>
           </div>
         </div>
@@ -37,5 +32,3 @@ export default function About () {
     </section>
   );
 }
-
-
