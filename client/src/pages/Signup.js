@@ -16,14 +16,14 @@ export default function Signup() {
     setIsLoading(true); // Set loading state when the button is clicked
 
     const body = {
-      user_name : user_name,
+      user_name: user_name,
       phone: phone,
       password: pass,
       email: email,
     };
     console.log(body);
 
-    fetch("http://127.0.0.1:8000/auth/create/", {
+    fetch(`${process.env.REACT_APP_API_BACKEND_URL + "/auth/create/"}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

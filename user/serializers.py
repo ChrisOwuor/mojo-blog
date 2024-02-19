@@ -7,7 +7,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     Currently unused in preference of the below.
     """
     email = serializers.EmailField(required=False)
-    user_name = serializers.CharField(required=True)
+    user_name = serializers.CharField(required=False)
     password = serializers.CharField(min_length=8, write_only=True)
     phone = serializers.IntegerField(required=False)
 

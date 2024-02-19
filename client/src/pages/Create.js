@@ -5,6 +5,8 @@ import ImageIcon from "@mui/icons-material/Image";
 import Tooltip from "@mui/material/Tooltip";
 import AuthContext from "../contexts/AuthContext";
 import { Alert } from "@mui/material";
+import ModalDialogScrollable from "../components/Modal";
+import AlertMoadal from "../components/AlertModal";
 
 const Create = () => {
   const [showAlert, setShowAlert] = useState(false);
@@ -68,7 +70,7 @@ const Create = () => {
     formData.append("category", selectedTags);
     formData.append("image", selectedImage);
 
-    const response = await fetch("http://localhost:8000/api/blogs/add", {
+    const response = await fetch("http://192.168.43.55:8000/api/blogs/add", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + String(AuthTokens.access),
@@ -98,7 +100,7 @@ const Create = () => {
       formData.append("prompt", mainTitle);
 
       const response = await fetch(
-        "http://localhost:8000/api/generate_response/",
+        "http://192.168.43.55:8000/api/generate_response/",
         {
           method: "POST",
           body: formData,
@@ -119,8 +121,8 @@ const Create = () => {
         });
 
         setBlogSections(sections);
-      } else if (response.statusText === "Unauthorized") {
-        console.log("not allowed");
+      } else if (response.statusText === 500) {
+        setLoadin(false)
       }
     }
   };
@@ -151,6 +153,11 @@ const Create = () => {
     <div className="w-full flex justify-center ">
       <div className="content lg:w-5/6 w-full px-2 lg:px-28 ">
         <Banner />
+        {showAlert && (
+          // <Alert onClose={() => setShowAlert(false)}>{alertMessage}</Alert>
+          <AlertMoadal/>
+
+        )}
         <div className="w-full flex justify-center mt-3 ">
           <form className="mb-6 w-full " onSubmit={handleSubmit}>
             <div className="py-2 px- mb-4  rounded-lg rounded-t-lg dark:bg-gray-800 dark:border-gray-700">
@@ -234,13 +241,7 @@ const Create = () => {
                 )}
               </button>{" "}
             </div>
-            <div className="mt-6 flex items-center justify-end gap-x-6">
-              {showAlert && (
-                <Alert onClose={() => setShowAlert(false)}>
-                  {alertMessage}
-                </Alert>
-              )}
-            </div>
+           
             <div className="flex flex-wrap justify-center gap-4 items-center mb-8">
               <p className="rounded-full border py-1 px-2 font-medium  ">
                 Tags

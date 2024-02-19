@@ -28,13 +28,16 @@ export default function PayModal({ id, no }) {
 
     setLoading(true);
 
-    const response = await fetch(`http://localhost:8000/api/billing/${id}/`, {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + String(AuthTokens.access),
-      },
-      body: formdata,
-    });
+    const response = await fetch(
+      `http://192.168.43.55:8000/api/billing/${id}/`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + String(AuthTokens.access),
+        },
+        body: formdata,
+      }
+    );
 
     // Check if the response is okay
     if (response.status === 202) {

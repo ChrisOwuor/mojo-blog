@@ -1,4 +1,4 @@
-import React, { useState, useContext,useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { TEInput } from "tw-elements-react";
 import { TextareaAutosize } from "@mui/base";
 import { useParams } from "react-router-dom";
@@ -7,8 +7,11 @@ import AuthContext from "../contexts/AuthContext";
 import { NavLink } from "react-router-dom";
 
 export default function EditProfile() {
+  const [image, setSelectedImage] = useState(null);
+
+  const [previewImage, setPreviewImage] = useState(null);
   const { user_id } = useParams();
-  const { AuthTokens ,logoutUser } = useContext(AuthContext);
+  const { AuthTokens, logoutUser } = useContext(AuthContext);
   const [active, setActive] = useState("profile");
   const [formData, setFormData] = useState({
     user_name: "",
@@ -18,6 +21,7 @@ export default function EditProfile() {
     age: "",
     country: "",
     gender: "",
+    image: null,
     oldPassword: "",
     newPassword: "",
   });
@@ -36,59 +40,62 @@ export default function EditProfile() {
       },
       body: form,
     };
-  let endpoint = "";
-  switch (active) {
-    case "profile":
-      endpoint = `/update_profile_picture/${user_id}/`;
-      break;
-    case "name":
-      endpoint = `/update_user_name/${user_id}/`;
-      break;
-    case "email":
-      endpoint = `/update_email/${user_id}/`;
-      break;
-    case "phone":
-      endpoint = `/update_phone/${user_id}/`;
-      break;
-    case "info":
-      endpoint = `/update_personal_info/${user_id}/`;
-      break;
-    case "bio":
-      endpoint = `/update_my_bio/${user_id}/`;
-      break;
-    case "security":
-      endpoint = `/update_security/${user_id}/`;
-      break;
-    default:
-      break;
-  }
-     try {
-       const response = await fetch(
-         `http://127.0.0.1:8000/profiles${endpoint}`,
-         requestOptions
-       );
+    let endpoint = "";
+    switch (active) {
+      case "profile":
+        endpoint = `/update_profile_picture/${user_id}/`;
+        break;
+      case "name":
+        endpoint = `/update_user_name/${user_id}/`;
+        break;
+      case "email":
+        endpoint = `/update_email/${user_id}/`;
+        break;
+      case "phone":
+        endpoint = `/update_phone/${user_id}/`;
+        break;
+      case "info":
+        endpoint = `/update_personal_info/${user_id}/`;
+        break;
+      case "bio":
+        endpoint = `/update_my_bio/${user_id}/`;
+        break;
+      case "security":
+        endpoint = `/update_security/${user_id}/`;
+        break;
+      default:
+        break;
+    }
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL + "/profiles" + endpoint}`,
+        requestOptions
+      );
 
-       if (response.ok) {
-         console.log(`Data updated successfully for ${active}`);
-       } else {
-         console.error(`Failed to update data for ${active}`);
-       }
-     } catch (error) {
-       console.error("Error updating data:", error);
-     }
+      if (response.ok) {
+        console.log(`Data updated successfully for ${active}`);
+      } else {
+        console.error(`Failed to update data for ${active}`);
+      }
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
   };
   const [data_p, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   let getBlogs = async () => {
-    let response = await fetch(`http://localhost:8000/auth/profile/${user_id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(AuthTokens.access),
-      },
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL + "/auth/profile/  " + user_id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + String(AuthTokens.access),
+        },
+      }
+    );
     let data_p = await response.json();
 
     if (response.status === 200) {
@@ -114,6 +121,18 @@ export default function EditProfile() {
   };
   const activate = (item) => {
     setActive(item);
+  };
+  const handleImageChange = async (event) => {
+    const file = await event.target.files[0];
+    setSelectedImage(file);
+    setPreviewImage(URL.createObjectURL(file));
+
+    if (file) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        image: file,
+      }));
+    }
   };
 
   return (
@@ -206,14 +225,33 @@ export default function EditProfile() {
                     Set up Your Profile Picture{" "}
                   </h1>
                   <label htmlFor="pfimage">
-                  {  data_p && <img
-                      src={`http://127.0.0.1:8000/${data_p[0].user_data.image}`}
-                      className="h-auto w-1/4 rounded-full mx-auto object-cover ml-0"
-                      alt=""
-                    />}
+                    {data_p && (
+                      <img
+                        src={`${
+                          process.env.REACT_APP_API_BACKEND_URL +
+                          data_p[0].user_data.image
+                        }`}
+                        className="rounded-md border  border-l object-cover max-h-[400px]  lg:max-h-[200px] w-full lg:w-2/5 "
+                        alt=""
+                      />
+                    )}
                   </label>
+                  <div className="preview grid grid-cols-1 lg:grid-cols-3 place-content-center lg:place-content-start">
+                    {previewImage && (
+                      <img
+                        src={previewImage}
+                        alt="Selected Preview"
+                        className="rounded-md border  border-l object-cover max-h-[400px]  lg:max-h-[200px] w-full lg:w-2/5  "
+                      />
+                    )}
+                  </div>
                   <div className="hidden w-full lg:w-3/5">
-                    <input type="file" name="image" id="pfimage" />
+                    <input
+                      type="file"
+                      name="image"
+                      id="pfimage"
+                      onChange={handleImageChange}
+                    />
                   </div>
                 </div>
                 <div className="footer flex justify-end mt-2 p-3 rounded-lg bg-gray-100">

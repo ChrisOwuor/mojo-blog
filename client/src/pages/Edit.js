@@ -27,7 +27,7 @@ const Edit = () => {
     const getBlogs = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/blogs/${blog_uid}`,
+          `http://192.168.43.55:8000/api/blogs/${blog_uid}`,
           {
             method: "GET",
             headers: {
@@ -116,7 +116,7 @@ const Edit = () => {
     formData.append("image", selectedImage);
 
     const response = await fetch(
-      `http://localhost:8000/api/blogs/edit/${blog_uid}`,
+      `http://192.168.43.55:8000/api/blogs/edit/${blog_uid}`,
       {
         method: "PUT",
         headers: {
@@ -259,7 +259,7 @@ const Edit = () => {
                 <div className="preview grid grid-cols-1 lg:grid-cols-3 place-content-center lg:place-content-start">
                   {previewImage1 && (
                     <img
-                      src={`http://127.0.0.1:8000/${previewImage1}`}
+                      src={`http://192.168.43.55:8000/${previewImage1}`}
                       alt="Selected Preview"
                       className="rounded-md border border-l object-cover max-h-[400px]  lg:max-h-[200px] w-full  "
                     />

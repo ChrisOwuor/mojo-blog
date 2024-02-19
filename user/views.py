@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status
 from rest_framework.response import Response
@@ -120,13 +121,19 @@ def Bio(request, id):
 def User(request, id):
     serializer_data = {}
 
-    bio_data = NewUser.objects.get(id=id)
-    serialized_bio_data = CustomUserSerializer(bio_data).data
+    # Check if the user exists
+    user = get_object_or_404(NewUser, id=id)
 
-    sub = Subscription.objects.get(premium_user=id)
-    subdata = SubscriptionSerializer(sub).data
+    # Check if the user has a subscription
+    subscription, created = Subscription.objects.get_or_create(
+        premium_user=user, defaults={'is_premium': False})
+
+    # Serialize user information
+    serialized_bio_data = CustomUserSerializer(user).data
     serializer_data["user_info"] = serialized_bio_data
-    serializer_data["premium"] = subdata["is_premium"]
+
+    # Serialize subscription information
+    serializer_data["premium"] = subscription.is_premium
 
     return Response(serializer_data, status.HTTP_200_OK)
 

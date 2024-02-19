@@ -1,42 +1,16 @@
-import { Fragment, useContext, useState, useEffect } from "react";
-import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
+import {  useContext, useState,  } from "react";
+import { Dialog,  Popover,  } from "@headlessui/react";
 import mojo from "../assets/mojo.png";
 import {
   Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
+ 
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Link, NavLink } from "react-router-dom";
 import ModalDialogScrollable from "./Modal";
 import AuthContext from "../contexts/AuthContext";
 
-const products = [
-  {
-    name: "Food",
-    description: "Get a better understanding of your traffic",
-    href: "/blogs/food",
-    icon: ChartPieIcon,
-  },
-  {
-    name: "Astronomy",
-    description: "Speak directly to your customers",
-    href: "/blogs/astronomy",
-    icon: CursorArrowRaysIcon,
-  },
-  {
-    name: "Nature",
-    description: "Your customers’ data will be safe and secure",
-    href: "/blogs/nature",
-    icon: FingerPrintIcon,
-  },
-];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function Navbar() {
   const { logoutUser, user, data, loadingPage } = useContext(AuthContext);
@@ -138,7 +112,9 @@ export default function Navbar() {
               {!loadingPage && data && (
                 <img
                   className="h-12 w-12 mx-auto rounded-full"
-                  src={`http://127.0.0.1:8000/${data.user_info.image}`}
+                  src={`${
+                    process.env.REACT_APP_API_BACKEND_URL + data.user_info.image
+                  }`}
                   alt=""
                 />
               )}
@@ -240,7 +216,10 @@ export default function Navbar() {
                       {!loadingPage && data && (
                         <img
                           className="h-12 w-12 ml-0 rounded-full"
-                          src={`http://127.0.0.1:8000/${data.user_info.image}`}
+                          src={`${
+                            process.env.REACT_APP_API_BACKEND_URL +
+                            data.user_info.image
+                          }`}
                           alt=""
                         />
                       )}

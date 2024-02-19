@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   TERipple,
   TEModal,
@@ -20,7 +20,7 @@ export default function ModalDialogScrollable() {
   const fetchSearchResults = async (e) => {
     setLoading(true);
     let response = await fetch(
-      `http://127.0.0.1:8000/api/search/?q=${searchTerm}`,
+      `${process.env.REACT_APP_API_BASE_URL + "/search/?q=" + searchTerm}`,
       {
         method: "GET",
         headers: {

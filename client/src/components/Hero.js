@@ -10,26 +10,24 @@ export default function Hero() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const formattedContent1 = data && data[0].content.replace(/[*"]/g, "").trim();
-   const formattedContent2 = data && data[1].content.replace(/[*"]/g, "").trim();
- const formattedContent3 = data && data[2].content.replace(/[*"]/g, "").trim();
-
 
   useEffect(() => {
     let getBlogs = async () => {
-      let response = await fetch("http://localhost:8000/api/featured-blogs/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: "Bearer " + String(AuthTokens.access),
-        },
-      });
+      let response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL + "/featured-blogs/"}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: "Bearer " + String(AuthTokens.access),
+          },
+        }
+      );
       let data = await response.json();
 
       if (response.status === 200) {
         setData(data);
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
+        setLoading(false);
       } else if (response.statusText === "Unauthorized") {
         setError(error);
         setLoading(false);
@@ -38,12 +36,10 @@ export default function Hero() {
     };
 
     getBlogs();
-  }, []);
-  // const isSmallScreen = window.innerWidth < 600;
+  }, [error, logoutUser]);
+ 
 
-  // const dateFormat = isSmallScreen
-  //   ? "DD/MM/YYYY"
-  //   : "MMMM DD, YYYY [at] HH:mm:ss";
+
   return (
     <div className="main_cont w-full flex justify-center ">
       <div className="w-5/6  ">
@@ -60,7 +56,9 @@ export default function Hero() {
                 <Link to="/single">
                   <img
                     className="w-full aspect-auto object-cover rounded-md lg:h-[300px]"
-                    src={`http://127.0.0.1:8000/${data[0].image}`}
+                    src={`${
+                      process.env.REACT_APP_API_BACKEND_URL + data[0].image
+                    }`}
                     alt="hero"
                     loading="lazy"
                   />
@@ -82,7 +80,9 @@ export default function Hero() {
                 <div className="flex items-center gap-2.5 mt-5">
                   <div className="flex w-6 h-6 rounded-full overflow-hidden" />
                   <img
-                    src={`http://127.0.0.1:8000/${data[0].profile}`}
+                    src={`${
+                      process.env.REACT_APP_API_BACKEND_URL + data[0].profile
+                    }`}
                     alt="user"
                     className=" w-12 h-12 rounded-full"
                   />
@@ -104,7 +104,9 @@ export default function Hero() {
                 <Link to={`/single/${data[1].uid}`}>
                   <img
                     className="w-full object-cover aspect-auto rounded-md"
-                    src={`http://127.0.0.1:8000/${data[1].image}`}
+                    src={`${
+                      process.env.REACT_APP_API_BACKEND_URL + data[1].image
+                    }`}
                     alt="hero"
                   />
                 </Link>
@@ -135,7 +137,10 @@ export default function Hero() {
                 <Link to={`/single/${data[2].uid}`}>
                   <img
                     className="w-full  object-cover rounded-md"
-                    src={`http://127.0.0.1:8000/${data[2].image}`}
+                    src={`${
+                      process.env.REACT_APP_API_BACKEND_URL +
+                      data[2].image
+                    }`}
                     alt="hero"
                   />
                 </Link>

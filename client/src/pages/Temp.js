@@ -5,15 +5,15 @@ import Skeleton from "../components/skeleton";
 import { useParams } from "react-router-dom";
 
 export default function Temp() {
-  let { AuthTokens, logoutUser } = useContext(AuthContext);
+  let {  logoutUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { name, id } = useParams();
+  const {  id } = useParams();
   useEffect(() => {
     let getBlogs = async () => {
       let response = await fetch(
-        `http://localhost:8000/api/blogs/category/${id}/`,
+        `${process.env.REACT_APP_API_BASE_URL + "/blogs/category/" + id + "/"}`,
         {
           method: "GET",
           headers: {
